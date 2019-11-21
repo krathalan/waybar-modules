@@ -1,12 +1,12 @@
 # waybar-modules
 A repository of C programs I use for custom waybar modules. 
 
-[Binaries and sums are provided](https://gitlab.com/krathalan/waybar-modules/-/releases) but you can simply build with `make release` in the module directory of your choosing, or run `bash make_release` in the `scripts/` directory of the project to build all modules in each of their directories.
+You can simply build with `make release` in the module directory of your choosing, or run `bash make_release` in the `scripts/` directory of the project to build all modules in each of their directories. Run `bash make_release --copy` to copy the compiled binaries to `/usr/bin/`.
 
-AppArmor profiles are provided in the module directory (e.g. `battery/usr.bin.wbm_battery` for the custom battery module).
+AppArmor profiles are provided in the `apparmor-profiles/` folder.
 
 ## battery
-![example battery module](images/battery.jpg)
+![example battery module](https://i.imgur.com/jovIrkU.jpg)
 
 A battery module that displays the current power draw in watts. Displays an additional charging icon when charging. Does not display current power draw in watts when charging.
 
@@ -51,7 +51,7 @@ Here's some example Waybar css for this battery module:
 ```
 
 ## vpn
-![example vpn module](images/vpn.jpg)
+![example vpn module](https://i.imgur.com/Zb1Jw1a.jpg)
 
 This program takes the name of a VPN interface, like "mullvad-us3", and returns json data containing information on the state of the VPN connection. This information can be used to change the theme based on the state of your VPN connection in your waybar.css.
 
