@@ -1,9 +1,20 @@
 # waybar-modules
-A repository of C programs I use for custom waybar modules. 
+A repository of C programs I use for custom waybar modules.
 
-You can simply build with `make release` in the module directory of your choosing, or run `bash make_release` in the `scripts/` directory of the project to build all modules in each of their directories. Run `bash make_release --copy` to copy the compiled binaries to `/usr/bin/`.
+## Installation
 
-AppArmor profiles are provided in the `apparmor-profiles/` folder.
+### Arch Linux
+Install the modules with my PKGBUILD:
+
+```
+$ git clone https://git.sr.ht/~krathalan/pkgbuilds
+$ cd pkgbuilds/krathalans-waybar-modules/
+$ nano --view PKGBUILD # Always inspect PKGBUILDS before running makepkg!
+$ makepkg -i
+```
+
+### Other distros
+You can simply build with `make release` in the module directory of your choosing. AppArmor profiles are provided in the `apparmor-profiles/` folder.
 
 ## battery
 ![example battery module](https://i.imgur.com/jovIrkU.jpg)
