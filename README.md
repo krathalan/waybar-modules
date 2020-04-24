@@ -4,7 +4,10 @@ A repository of C programs I use for custom waybar modules.
 ## Installation
 
 ### Arch Linux
-Install the modules with my PKGBUILD:
+Releases are signed so you'll need to import my GPG key first:
+`02AA A23A BDF1 D538 BD88  9D25 1AAD E5E7 28FF C667`
+
+Then install the modules with my PKGBUILD:
 
 ```
 $ git clone https://git.sr.ht/~krathalan/pkgbuilds
