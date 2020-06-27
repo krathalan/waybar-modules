@@ -1,6 +1,8 @@
 # waybar-modules
 A repository of C programs I use for custom waybar modules.
 
+The font used for icons is `ttf-material-design-icons` from the AUR. You can easily patch the source files if you have a different font/icon you wish to use.
+
 ## Installation
 
 ### Arch Linux
