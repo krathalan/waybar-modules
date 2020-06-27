@@ -40,11 +40,11 @@ int main(int argc, char** argv) {
 
   if (dir) {
     /* Directory exists. */
-    printf("{\"text\": \"%s \"}", argv[1]);
+    printf("{\"text\": \"%s \"}", argv[1]);
     closedir(dir);
   } else if (ENOENT == errno) {
     /* Directory does not exist. */
-    printf("{\"text\": \"No VPN \",\"class\": \"down\"}");
+    printf("{\"text\": \"No VPN \",\"class\": \"down\"}");
   }
 
   return 0;
