@@ -1,4 +1,4 @@
-# AppArmor profile for wbm_battery
+# AppArmor profile for wbm_vpn
 # https://git.sr.ht/~krathalan/waybar-modules
 
 #include <tunables/global>
