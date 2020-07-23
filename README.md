@@ -6,8 +6,9 @@ The font used for icons is `ttf-material-design-icons` from the AUR. You can eas
 ## Installation
 
 ### Arch Linux
-Releases are signed so you'll need to import my GPG key first:
-`02AA A23A BDF1 D538 BD88  9D25 1AAD E5E7 28FF C667`
+AUR releases are signed so you'll need to import my GPG key:
+
+`<srht@krathalan.net> B46B 3262 73E4 A1D2 1AAA 3F6F 529A C100 50BD 24EF`
 
 Then install the modules with my PKGBUILD:
 
