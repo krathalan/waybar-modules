@@ -1,5 +1,5 @@
 # AppArmor profile for wbm_battery
-# https://git.sr.ht/~krathalan/waybar-modules
+# https://github.com/krathalan/waybar-modules
 
 #include <tunables/global>
 

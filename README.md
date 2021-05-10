@@ -13,7 +13,7 @@ AUR releases are signed so you'll need to import my GPG key:
 Then install the modules with my PKGBUILD:
 
 ```
-$ git clone https://git.sr.ht/~krathalan/pkgbuilds
+$ git clone https://github.com/krathalan/pkgbuilds
 $ cd pkgbuilds/krathalans-waybar-modules/
 $ nano --view PKGBUILD # Always inspect PKGBUILDS before running makepkg!
 $ makepkg -i

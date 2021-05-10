@@ -1,5 +1,5 @@
 /* battery.c: program to be used in a custom waybar module.
- * Homepage: https://git.sr.ht/~krathalan/waybar-modules
+ * Homepage: https://github.com/krathalan/waybar-modules
  *
  * Copyright (C) 2019 Hunter Peavey
  *
