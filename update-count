@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+#
+# Description: Lists update count and optionally turns critical when a 
+#              critical package update is available.
+#
+# Homepage: https://github.com/krathalan/waybar-modules
+#
+# Copyright (C) 2021 Hunter Peavey
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# -----------------------------------------
+# -------------- Guidelines ---------------
+# -----------------------------------------
+
+# This script follows the Google Shell Style Guide:
+# https://google.github.io/styleguide/shell.xml
+
+# This script uses shellcheck: https://www.shellcheck.net/
+
+# See https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
+set -Eeuo pipefail
+
+# -----------------------------------------
+# ----------- Program variables -----------
+# -----------------------------------------
+
+# Colors
+RED=$(tput bold && tput setaf 1)
+NC=$(tput sgr0) # No color/turn off all tput attributes
+readonly RED
+readonly NC
+
+# Other
+readonly SCRIPT_NAME="${0##*/}"
+
+# -----------------------------------------
+# ------------- User variables ------------
+# -----------------------------------------
+
+# -----------------------------------------
+# --------------- Functions ---------------
+# -----------------------------------------
+
+#######################################
+# Prints passed error message before premature exit.
+# Prints everything to >&2 (STDERR).
+# Globals:
+#   RED, NC
+#   SCRIPT_NAME
+# Arguments:
+#   $1: error message to print
+# Returns:
+#   none
+#######################################
+exit_script_on_failure()
+{
+  printf "%sError%s: %s\n" "${RED}" "${NC}" "$1" >&2
+  exit 1
+}
+
+# -----------------------------------------
+# ---------------- Script -----------------
+# -----------------------------------------
+
+[[ "$(whoami)" = "root" ]] &&
+  exit_script_on_failure "This script should NOT be run as root (or sudo)!"
+
+# Get list of critical packages
+mapfile -t criticalPackages <<< "$(<${XDG_CONFIG_HOME:-$HOME/.config}/waybar-modules/packages)"
+
+# Check if we're online :)
+if ! ping krathalan.net -c 2 &> /dev/null; then
+  class="internet-down"
+  toPrint="No internet"
+else
+  # Get list of package updates
+  mapfile -t packageUpdates <<< "$(checkupdates | cut -d' ' -f1)"
+  toPrint="${#packageUpdates[@]} 󰆧"
+
+  # From https://unix.stackexchange.com/questions/104837/intersection-of-two-arrays-in-bash/293254#293254
+  numberOfCriticalPackages="$(echo "${criticalPackages[@]}" "${packageUpdates[@]}" | sed 's/ /\n/g' | sort | uniq -d | wc -l)"
+
+  # Determine if critical package update is available
+  if [[ "${numberOfCriticalPackages}" -gt 0 ]]; then
+    class="critical"
+  else
+    class="normal"
+  fi
+fi
+
+# Print json for waybar to interpret
+printf "{\"text\": \"%s\", \"class\": \"%s\"}" "${toPrint}" "${class}"

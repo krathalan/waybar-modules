@@ -1,5 +1,5 @@
 # waybar-modules
-A repository of C programs I use for custom waybar modules.
+A repository of programs I use for custom waybar modules.
 
 The font used for icons is `ttf-material-design-icons` from the AUR. You can easily patch the source files if you have a different font/icon you wish to use.
 
@@ -22,7 +22,7 @@ $ makepkg -i
 ### Other distros
 You can simply build with `make release` in the module directory of your choosing. AppArmor profiles are provided in the `apparmor-profiles/` folder.
 
-## battery
+## battery (C)
 ![example battery module](https://i.imgur.com/jovIrkU.jpg)
 
 A battery module that displays the current power draw in watts. Displays an additional charging icon when charging. Does not display current power draw in watts when charging.
@@ -67,7 +67,12 @@ Here's some example Waybar css for this battery module:
 }
 ```
 
-## vpn
+## update-count (Bash)
+A wrapper on `checkupdates` from `pacman-contrib` that can optionally turn critical when an update is available for one or more user-defined critical packages (specified on separate lines in ~/.config/waybar-modules/packages).
+
+Warning: this script pings my personal domain `krathalan.net` to check if an internet connection is available.
+
+## vpn (C)
 ![example vpn module](https://i.imgur.com/Zb1Jw1a.jpg)
 
 This program takes the name of a VPN interface, like "mullvad-us3", and returns json data containing information on the state of the VPN connection. This information can be used to change the theme based on the state of your VPN connection in your waybar.css.
