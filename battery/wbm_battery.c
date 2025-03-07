@@ -1,7 +1,14 @@
 /* battery.c: program to be used in a custom waybar module.
+ *
+ * Please note that this file was updated in 2025 to target
+ * the Framework 13 laptop with an AMD CPU. If you are having
+ * issues using this program, please check the git history
+ * and try to use the prior version. You may also need to change
+ * the path for your battery in the constant variables below.
+ *
  * Homepage: https://github.com/krathalan/waybar-modules
  *
- * Copyright (C) 2019 Hunter Peavey
+ * Copyright (C) 2019-2025 Hunter Peavey
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,15 +34,16 @@
 #include <stdlib.h>
 
 // Constants
-#define MICROWATT_TO_WATT_FACTOR 1000000
+#define SCALE_FACTOR 1000000000000
 #define STR_BUFFER_LEN 15
 #define LARGE_STR_BUFFER_LEN 20
 
 // Battery paths
-#define PATH_POWER_NOW "/sys/class/power_supply/BAT0/power_now"
-#define PATH_ENERGY_FULL "/sys/class/power_supply/BAT0/energy_full"
-#define PATH_ENERGY_NOW "/sys/class/power_supply/BAT0/energy_now"
-#define PATH_STATE "/sys/class/power_supply/BAT0/status"
+#define PATH_CURRENT_NOW "/sys/class/power_supply/BAT1/current_now"
+#define PATH_VOLTAGE_NOW "/sys/class/power_supply/BAT1/voltage_now"
+#define PATH_CHARGE_FULL "/sys/class/power_supply/BAT1/charge_full"
+#define PATH_CHARGE_NOW "/sys/class/power_supply/BAT1/charge_now"
+#define PATH_STATE "/sys/class/power_supply/BAT1/status"
 
 // Functions
 float read_float_from_file(char fileToOpen[]);
@@ -47,48 +55,48 @@ int main(void) {
   float batteryPercentage;
   char wattDisplayString[STR_BUFFER_LEN];
   char batteryState[STR_BUFFER_LEN];
-  char *batteryStateIcon;
-  char finalOutput[LARGE_STR_BUFFER_LEN];
 
   // 1. Current discharge
   currentDischarge =
-      read_float_from_file(PATH_POWER_NOW) / MICROWATT_TO_WATT_FACTOR;
+      read_float_from_file(PATH_CURRENT_NOW) * read_float_from_file(PATH_VOLTAGE_NOW) 
+      / SCALE_FACTOR;
 
   // 2. Battery percentage
-  batteryPercentage = read_float_from_file(PATH_ENERGY_NOW) /
-                      read_float_from_file(PATH_ENERGY_FULL) * 100;
+  batteryPercentage = read_float_from_file(PATH_CHARGE_NOW) /
+                      read_float_from_file(PATH_CHARGE_FULL) * 100;
 
   // 3. Watt display string
-  snprintf(wattDisplayString, sizeof(wattDisplayString), "%0.0fW ",
+  snprintf(wattDisplayString, sizeof(wattDisplayString), " (%0.0fW)",
            currentDischarge);
 
   // 4. Battery state
   read_string_from_file(PATH_STATE, batteryState);
 
-  // Convert batteryState to lowercase as CSS expects a lowercase value
+  // Convert batteryState to lowercase as waybar CSS expects a lowercase value
   for (int i = 0; batteryState[i]; i++) {
     batteryState[i] = tolower(batteryState[i]);
   }
 
   // 5. Battery state icon
-  batteryStateIcon = "";
-
-  if (strcmp(batteryState, "charging") == 0 || currentDischarge == 0) {
-    batteryStateIcon = "󱐋";
+  // If the battery is charging or the wattage is less than 1W (i.e., 0), convert
+  // wattage output to charging icon.
+  if (strcmp(batteryState, "charging") == 0 || currentDischarge < 1) {
+    strcpy(wattDisplayString, "󱐥");
 
     // Assert batteryState to charging if we got here through currentDischarge=0
     snprintf(batteryState, sizeof(batteryState), "charging");
-
-    // Also set watts to null, it means nothing when charging
-    strcpy(wattDisplayString, "");
+  } else {
+    // If battery is NOT charging,
+    // and if battery is less than 30% charged,
+    // change battery state to "critical"
+    if (batteryPercentage < 30) {
+      snprintf(batteryState, sizeof(batteryState), "critical");
+    }
   }
 
   // 6. Final output
-  snprintf(finalOutput, sizeof(finalOutput), "%s%s", wattDisplayString,
-           batteryStateIcon);
-
   printf("{\"text\": \"%s\", \"class\": \"%s\", \"percentage\": %0.0f}",
-         finalOutput, batteryState, batteryPercentage);
+    wattDisplayString, batteryState, batteryPercentage);
 
   return 0;
 }
